@@ -14,10 +14,10 @@
 package org.openmrs.module.importpatientfromws.api.db;
 
 /**
- *  Database methods for {@link org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService}.
+ * Database methods for {@link org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService}.
  */
 public interface ImportPatientFromWebServiceDAO {
-	
+
 	/*
 	 * Add DAO methods here
 	 */

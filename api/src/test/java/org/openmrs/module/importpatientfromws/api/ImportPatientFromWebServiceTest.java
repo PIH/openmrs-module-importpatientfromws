@@ -20,10 +20,10 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import static org.junit.Assert.assertNotNull;
 
 public class ImportPatientFromWebServiceTest extends BaseModuleContextSensitiveTest {
-	
-	@Test
-	public void shouldSetupContext() {
-		assertNotNull(Context.getService(ImportPatientFromWebService.class));
-	}
+
+    @Test
+    public void shouldSetupContext() {
+        assertNotNull(Context.getService(ImportPatientFromWebService.class));
+    }
 
 }

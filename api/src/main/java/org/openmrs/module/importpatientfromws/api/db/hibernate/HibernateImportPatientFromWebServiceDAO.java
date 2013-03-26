@@ -22,21 +22,21 @@ import org.openmrs.module.importpatientfromws.api.db.ImportPatientFromWebService
  * It is a default implementation of  {@link ImportPatientFromWebServiceDAO}.
  */
 public class HibernateImportPatientFromWebServiceDAO implements ImportPatientFromWebServiceDAO {
-	protected final Log log = LogFactory.getLog(this.getClass());
-	
-	private SessionFactory sessionFactory;
-	
-	/**
+    protected final Log log = LogFactory.getLog(this.getClass());
+
+    private SessionFactory sessionFactory;
+
+    /**
      * @param sessionFactory the sessionFactory to set
      */
     public void setSessionFactory(SessionFactory sessionFactory) {
-	    this.sessionFactory = sessionFactory;
+        this.sessionFactory = sessionFactory;
     }
-    
-	/**
+
+    /**
      * @return the sessionFactory
      */
     public SessionFactory getSessionFactory() {
-	    return sessionFactory;
+        return sessionFactory;
     }
 }

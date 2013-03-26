@@ -18,19 +18,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This service exposes module's core functionality. It is a Spring managed bean which is configured in moduleApplicationContext.xml.
- * <p>
+ * <p/>
  * It can be accessed only via Context:<br>
  * <code>
  * Context.getService(ImportPatientFromWebService.class).someMethod();
  * </code>
- * 
+ *
  * @see org.openmrs.api.context.Context
  */
 @Transactional
 public interface ImportPatientFromWebService extends OpenmrsService {
      
 	/*
-	 * Add service methods here
+     * Add service methods here
 	 * 
 	 */
 }

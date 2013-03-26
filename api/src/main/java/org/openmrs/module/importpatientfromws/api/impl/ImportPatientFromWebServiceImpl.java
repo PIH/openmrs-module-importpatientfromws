@@ -23,22 +23,22 @@ import org.openmrs.module.importpatientfromws.api.db.ImportPatientFromWebService
  * It is a default implementation of {@link org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService}.
  */
 public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implements ImportPatientFromWebService {
-	
-	protected final Log log = LogFactory.getLog(this.getClass());
-	
-	private ImportPatientFromWebServiceDAO dao;
-	
-	/**
+
+    protected final Log log = LogFactory.getLog(this.getClass());
+
+    private ImportPatientFromWebServiceDAO dao;
+
+    /**
      * @param dao the dao to set
      */
     public void setDao(ImportPatientFromWebServiceDAO dao) {
-	    this.dao = dao;
+        this.dao = dao;
     }
-    
+
     /**
      * @return the dao
      */
     public ImportPatientFromWebServiceDAO getDao() {
-	    return dao;
+        return dao;
     }
 }
