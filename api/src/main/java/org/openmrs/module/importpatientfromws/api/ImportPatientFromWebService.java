@@ -13,8 +13,14 @@
  */
 package org.openmrs.module.importpatientfromws.api;
 
+import org.openmrs.Location;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.api.OpenmrsService;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * This service exposes module's core functionality. It is a Spring managed bean which is configured in moduleApplicationContext.xml.
@@ -26,11 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @see org.openmrs.api.context.Context
  */
-@Transactional
 public interface ImportPatientFromWebService extends OpenmrsService {
+
+    Patient toPatient(String json, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException;
      
-	/*
-     * Add service methods here
-	 * 
-	 */
 }
