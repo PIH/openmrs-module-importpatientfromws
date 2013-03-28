@@ -25,6 +25,7 @@ import org.openmrs.module.importpatientfromws.api.impl.ImportPatientFromWebServi
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
@@ -37,12 +38,10 @@ import static org.junit.Assert.assertThat;
 public class BehaviorTest {
 
     private ImportPatientFromWebService service;
-    private String json;
     private SimpleDateFormat dateFormat;
 
     @Before
     public void setUp() throws Exception {
-        json = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("patient.json"), "UTF-8");
         service = new ImportPatientFromWebServiceImpl();
         dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     }
@@ -61,7 +60,9 @@ public class BehaviorTest {
         Map<String, PersonAttributeType> attributeTypeMap = new HashMap<String, PersonAttributeType>();
         attributeTypeMap.put("340d04c4-0370-102d-b0e3-001ec94a0cc1", telephoneNumber);
 
-        Patient actual = service.toPatient(json, identifierTypes, locationMap, attributeTypeMap);
+        String patientJson = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("patient.json"), "UTF-8");
+
+        Patient actual = service.toPatient(patientJson, identifierTypes, locationMap, attributeTypeMap);
 
         assertThat(actual.getGender(), is("F"));
         assertThat(actual.getBirthdate(), is(dateFormat.parse("1969-09-20T00:00:00.000-0400")));
@@ -100,4 +101,10 @@ public class BehaviorTest {
         assertThat(actual.getActiveAttributes().get(0).getValue(), is("389389389"));
     }
 
+    @Test
+    public void testFetchingPatients() throws Exception {
+        List<Patient> results = service.searchRemoteServer("Ellen Ball", "F", null);
+        assertThat(results.size(), is(1));
+        assertThat(results.get(0).getPersonName().toString(), is("Ellen Ball"));
+    }
 }

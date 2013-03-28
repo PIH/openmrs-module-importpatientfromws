@@ -1,0 +1,233 @@
+{
+    "results": [
+        {
+            "uuid": "ea3ec0c2-b4d0-4d18-806c-bb99000d29a1",
+            "display": "2ALH69 - Ellen Ball",
+            "identifiers": [
+                {
+                    "display": "ZL EMR ID = 2ALH69",
+                    "uuid": "ed8a0d71-959e-4f85-a4df-dc4e931fb223",
+                    "identifier": "2ALH69",
+                    "identifierType": {
+                        "uuid": "a541af1e-105c-40bf-b345-ba1fd6a59b85",
+                        "display": "ZL EMR ID",
+                        "links": [
+                            {
+                                "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/patientidentifiertype\/a541af1e-105c-40bf-b345-ba1fd6a59b85",
+                                "rel": "self"
+                            }
+                        ]
+                    },
+                    "location": {
+                        "uuid": "23e7bb0d-51f9-4d5f-b34b-2fbbfeea1960",
+                        "display": "Lacolline",
+                        "links": [
+                            {
+                                "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/location\/23e7bb0d-51f9-4d5f-b34b-2fbbfeea1960",
+                                "rel": "self"
+                            }
+                        ]
+                    },
+                    "preferred": true,
+                    "voided": false,
+                    "links": [
+                        {
+                            "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/patient\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/identifier\/ed8a0d71-959e-4f85-a4df-dc4e931fb223",
+                            "rel": "self"
+                        },
+                        {
+                            "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/patient\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/identifier\/ed8a0d71-959e-4f85-a4df-dc4e931fb223?v=full",
+                            "rel": "full"
+                        }
+                    ],
+                    "resourceVersion": "1.8"
+                }
+            ],
+            "person": {
+                "uuid": "ea3ec0c2-b4d0-4d18-806c-bb99000d29a1",
+                "display": "Ellen Ball",
+                "gender": "F",
+                "age": 43,
+                "birthdate": "1969-09-20T00:00:00.000-0400",
+                "birthdateEstimated": false,
+                "dead": false,
+                "deathDate": null,
+                "causeOfDeath": null,
+                "preferredName": {
+                    "display": "Ellen Ball",
+                    "uuid": "2093a73f-bbdc-4a48-a9fc-765aa2135823",
+                    "givenName": "Ellen",
+                    "middleName": null,
+                    "familyName": "Ball",
+                    "familyName2": null,
+                    "voided": false,
+                    "links": [
+                        {
+                            "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/person\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/name\/2093a73f-bbdc-4a48-a9fc-765aa2135823",
+                            "rel": "self"
+                        },
+                        {
+                            "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/person\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/name\/2093a73f-bbdc-4a48-a9fc-765aa2135823?v=full",
+                            "rel": "full"
+                        }
+                    ],
+                    "resourceVersion": "1.8"
+                },
+                "preferredAddress": {
+                    "display": "Cange",
+                    "uuid": "26f01a9d-95c6-48a6-b9b1-019e788b65dd",
+                    "preferred": true,
+                    "address1": "Cange",
+                    "address2": "hill",
+                    "cityVillage": "Lascahobas",
+                    "stateProvince": "Centre",
+                    "country": "Haiti",
+                    "postalCode": null,
+                    "countyDistrict": null,
+                    "address3": "3\u00e8me La Hoye",
+                    "address4": null,
+                    "address5": null,
+                    "address6": null,
+                    "startDate": null,
+                    "endDate": null,
+                    "latitude": null,
+                    "longitude": null,
+                    "voided": false,
+                    "links": [
+                        {
+                            "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/person\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/address\/26f01a9d-95c6-48a6-b9b1-019e788b65dd",
+                            "rel": "self"
+                        },
+                        {
+                            "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/person\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/address\/26f01a9d-95c6-48a6-b9b1-019e788b65dd?v=full",
+                            "rel": "full"
+                        }
+                    ],
+                    "resourceVersion": "1.8"
+                },
+                "names": [
+                    {
+                        "display": "Ellen Ball",
+                        "uuid": "2093a73f-bbdc-4a48-a9fc-765aa2135823",
+                        "givenName": "Ellen",
+                        "middleName": null,
+                        "familyName": "Ball",
+                        "familyName2": null,
+                        "voided": false,
+                        "links": [
+                            {
+                                "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/person\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/name\/2093a73f-bbdc-4a48-a9fc-765aa2135823",
+                                "rel": "self"
+                            },
+                            {
+                                "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/person\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/name\/2093a73f-bbdc-4a48-a9fc-765aa2135823?v=full",
+                                "rel": "full"
+                            }
+                        ],
+                        "resourceVersion": "1.8"
+                    }
+                ],
+                "addresses": [
+                    {
+                        "display": "Cange",
+                        "uuid": "26f01a9d-95c6-48a6-b9b1-019e788b65dd",
+                        "preferred": true,
+                        "address1": "Cange",
+                        "address2": "hill",
+                        "cityVillage": "Lascahobas",
+                        "stateProvince": "Centre",
+                        "country": "Haiti",
+                        "postalCode": null,
+                        "countyDistrict": null,
+                        "address3": "3\u00e8me La Hoye",
+                        "address4": null,
+                        "address5": null,
+                        "address6": null,
+                        "startDate": null,
+                        "endDate": null,
+                        "latitude": null,
+                        "longitude": null,
+                        "voided": false,
+                        "links": [
+                            {
+                                "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/person\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/address\/26f01a9d-95c6-48a6-b9b1-019e788b65dd",
+                                "rel": "self"
+                            },
+                            {
+                                "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/person\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/address\/26f01a9d-95c6-48a6-b9b1-019e788b65dd?v=full",
+                                "rel": "full"
+                            }
+                        ],
+                        "resourceVersion": "1.8"
+                    }
+                ],
+                "attributes": [
+                    {
+                        "display": "Telephone Number = 389389389",
+                        "uuid": "3406d62e-d137-4d57-a6c4-f794792b1c26",
+                        "value": "389389389",
+                        "attributeType": {
+                            "uuid": "340d04c4-0370-102d-b0e3-001ec94a0cc1",
+                            "display": "Telephone Number",
+                            "links": [
+                                {
+                                    "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/personattributetype\/340d04c4-0370-102d-b0e3-001ec94a0cc1",
+                                    "rel": "self"
+                                }
+                            ]
+                        },
+                        "voided": false,
+                        "links": [
+                            {
+                                "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/person\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/attribute\/3406d62e-d137-4d57-a6c4-f794792b1c26",
+                                "rel": "self"
+                            },
+                            {
+                                "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/person\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1\/attribute\/3406d62e-d137-4d57-a6c4-f794792b1c26?v=full",
+                                "rel": "full"
+                            }
+                        ],
+                        "resourceVersion": "1.8"
+                    }
+                ],
+                "voided": false,
+                "auditInfo": {
+                    "creator": null,
+                    "dateCreated": null,
+                    "changedBy": null,
+                    "dateChanged": null
+                },
+                "links": [
+                    {
+                        "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/person\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1",
+                        "rel": "self"
+                    }
+                ],
+                "resourceVersion": "1.8"
+            },
+            "voided": false,
+            "auditInfo": {
+                "creator": {
+                    "uuid": "a4f86a94-eda8-11df-82ec-88ae1dad3d0c",
+                    "display": "ball",
+                    "links": [
+                        {
+                            "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/user\/a4f86a94-eda8-11df-82ec-88ae1dad3d0c",
+                            "rel": "self"
+                        }
+                    ]
+                },
+                "dateCreated": "2013-01-08T09:25:12.000-0500",
+                "changedBy": null,
+                "dateChanged": null
+            },
+            "links": [
+                {
+                    "uri": "NEED-TO-CONFIGURE\/ws\/rest\/v1\/patient\/ea3ec0c2-b4d0-4d18-806c-bb99000d29a1",
+                    "rel": "self"
+                }
+            ],
+            "resourceVersion": "1.8"
+        }
+    ]
+}

@@ -20,6 +20,8 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.api.OpenmrsService;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,5 +37,7 @@ import java.util.Map;
 public interface ImportPatientFromWebService extends OpenmrsService {
 
     Patient toPatient(String json, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException;
-     
+
+    List<Patient> searchMasterPatientIndex(String name, String gender, Date birthdate);
+
 }

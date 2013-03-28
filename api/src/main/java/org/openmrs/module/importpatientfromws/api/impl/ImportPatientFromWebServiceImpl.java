@@ -35,7 +35,9 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -152,6 +154,11 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
         }
 
         return patient;
+    }
+
+    @Override
+    public List<Patient> searchRemoteServer(String name, String gender, Date birthdate) {
+        return new ArrayList<Patient>();
     }
 
     private void copyDateProperty(Object ontoBean, JsonNode fromJson, String field) {
