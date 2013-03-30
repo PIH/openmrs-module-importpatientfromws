@@ -80,6 +80,15 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
     }
 
     @Override
+    public Map<String, RemoteServerConfiguration> getRemoteServers() {
+        Map<String, RemoteServerConfiguration> map = new HashMap<String, RemoteServerConfiguration>();
+        for (Map.Entry<String, RemoteServerConfiguration> entry : remoteServers.entrySet()) {
+            map.put(entry.getKey(), entry.getValue().copyWithoutPassword());
+        }
+        return map;
+    }
+
+    @Override
     public Patient toPatient(String jsonString, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException {
         JsonNode json = new ObjectMapper().readValue(jsonString, JsonNode.class);
         return toPatient(json, identifierTypesByUuid, locationsByUuid, attributeTypesByUuid);

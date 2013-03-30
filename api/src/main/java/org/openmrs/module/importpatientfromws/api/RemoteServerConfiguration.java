@@ -92,4 +92,13 @@ public class RemoteServerConfiguration {
         this.attributeTypeMap = attributeTypeMap;
     }
 
+    public RemoteServerConfiguration copyWithoutPassword() {
+        RemoteServerConfiguration copy = new RemoteServerConfiguration();
+        copy.setUrl(getUrl());
+        copy.setUsername(getUsername());
+        copy.setIdentifierTypeMap(getIdentifierTypeMap());
+        copy.setLocationMap(getLocationMap());
+        copy.setAttributeTypeMap(getAttributeTypeMap());
+        return copy;
+    }
 }

@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNull.notNullValue;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -140,6 +141,20 @@ public class BehaviorTest {
         List<Patient> results = service.searchRemoteServer("lacolline", "2ALH69");
         assertThat(results.size(), is(1));
         assertThat(results.get(0).getPersonName().toString(), is("Ellen Ball"));
+    }
+
+    @Test
+    public void testGetRemoteServers() throws Exception {
+        service.registerRemoteServer("lacolline", remoteServerConfiguration);
+        Map<String, RemoteServerConfiguration> actual = service.getRemoteServers();
+        assertThat(actual.size(), is(1));
+        RemoteServerConfiguration lacollineRemote = actual.get("lacolline");
+        assertThat(lacollineRemote.getUrl(), notNullValue());
+        assertThat(lacollineRemote.getUsername(), notNullValue());
+        assertThat(lacollineRemote.getIdentifierTypeMap(), notNullValue());
+        assertThat(lacollineRemote.getLocationMap(), notNullValue());
+        assertThat(lacollineRemote.getAttributeTypeMap(), notNullValue());
+        assertThat(lacollineRemote.getPassword(), nullValue());
     }
 
     private class MockClient extends Client {
