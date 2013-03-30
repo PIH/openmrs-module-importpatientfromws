@@ -186,22 +186,20 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
     @Override
     public List<Patient> searchRemoteServer(String serverName, String name, String gender, Date birthdate) throws IOException {
         RemoteServerConfiguration remoteServerConfiguration = remoteServers.get(serverName);
-        if (remoteServerConfiguration == null) {
-            throw new IllegalArgumentException("Unknown remote server: " + serverName + ". Known servers are " + remoteServers.keySet());
-        }
-        if (!remoteServerConfiguration.getUrl().startsWith("https://")) {
-            log.warn("non-HTTPS connection to " + serverName);
-        }
+        WebResource resource = setUpWebResource(serverName, remoteServerConfiguration);
 
-        WebResource resource = restClient.resource(remoteServerConfiguration.getUrl()).path("ws/rest/v1/patient").queryParam("v", "full").queryParam("name", name);
-        resource.addFilter(new HTTPBasicAuthFilter(remoteServerConfiguration.getUsername(), remoteServerConfiguration.getPassword()));
+        resource = resource.queryParam("name", name);
         if (gender != null) {
-            resource.queryParam("gender", gender);
+            resource = resource.queryParam("gender", gender);
         }
         if (birthdate != null) {
-            resource.queryParam("birthdate", formatDate(birthdate));
+            resource = resource.queryParam("birthdate", formatDate(birthdate));
         }
 
+        return doPatientSearch(remoteServerConfiguration, resource);
+    }
+
+    private List<Patient> doPatientSearch(RemoteServerConfiguration remoteServerConfiguration, WebResource resource) throws IOException {
         String json = resource.accept(MediaType.APPLICATION_JSON_TYPE).get(String.class);
         JsonNode results = new ObjectMapper().readValue(json, JsonNode.class).get("results");
 
@@ -210,6 +208,29 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
             patients.add(toPatient(patient, remoteServerConfiguration.getIdentifierTypeMap(), remoteServerConfiguration.getLocationMap(), remoteServerConfiguration.getAttributeTypeMap()));
         }
         return patients;
+    }
+
+    private WebResource setUpWebResource(String serverName, RemoteServerConfiguration remoteServerConfiguration) {
+        if (remoteServerConfiguration == null) {
+            throw new IllegalArgumentException("Unknown remote server: " + serverName + ". Known servers are " + remoteServers.keySet());
+        }
+        if (!remoteServerConfiguration.getUrl().startsWith("https://")) {
+            log.warn("non-HTTPS connection to " + serverName);
+        }
+
+        WebResource resource = restClient.resource(remoteServerConfiguration.getUrl()).path("ws/rest/v1/patient").queryParam("v", "full");
+        resource.addFilter(new HTTPBasicAuthFilter(remoteServerConfiguration.getUsername(), remoteServerConfiguration.getPassword()));
+        return resource;
+    }
+
+    @Override
+    public List<Patient> searchRemoteServer(String serverName, String id) throws IOException {
+        RemoteServerConfiguration remoteServerConfiguration = remoteServers.get(serverName);
+        WebResource resource = setUpWebResource(serverName, remoteServerConfiguration);
+
+        resource = resource.queryParam("id", id);
+
+        return doPatientSearch(remoteServerConfiguration, resource);
     }
 
     private String formatDate(Date date) {

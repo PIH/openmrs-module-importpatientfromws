@@ -14,6 +14,7 @@
 
 package org.openmrs.module.importpatientfromws.api;
 
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
@@ -33,8 +34,10 @@ import java.util.Map;
 @Ignore
 public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
 
-    @Test
-    public void testLiveWebservice() throws Exception {
+    private ImportPatientFromWebService service;
+
+    @Before
+    public void setUp() throws Exception {
         PatientIdentifierType patientIdentifierType = Context.getPatientService().getPatientIdentifierType(2);
         Map<String, PatientIdentifierType> identifierTypes = new HashMap<String, PatientIdentifierType>();
         identifierTypes.put("a541af1e-105c-40bf-b345-ba1fd6a59b85", patientIdentifierType);
@@ -55,14 +58,28 @@ public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
         remoteServerConfiguration.setLocationMap(locationMap);
         remoteServerConfiguration.setAttributeTypeMap(attributeTypeMap);
 
-        ImportPatientFromWebService service = Context.getService(ImportPatientFromWebService.class);
+        service = Context.getService(ImportPatientFromWebService.class);
         service.registerRemoteServer("testing", remoteServerConfiguration);
+    }
+
+    @Test
+    public void testLiveWebserviceSearchByName() throws Exception {
         List<Patient> patients = service.searchRemoteServer("testing", "ellen", "F", null);
 
-        System.out.println("=== Found " + patients.size() + " patients ===");
+        System.out.println("=== Found " + patients.size() + " patients by name ===");
         for (Patient patient : patients) {
             System.out.println(patient.getPatientIdentifier() + " - " + patient.getPersonName());
         }
-
     }
+
+    @Test
+    public void testLiveWebserviceSearchById() throws Exception {
+        List<Patient> patients = service.searchRemoteServer("testing", "2ALH69");
+
+        System.out.println("=== Found " + patients.size() + " patients by ID ===");
+        for (Patient patient : patients) {
+            System.out.println(patient.getPatientIdentifier() + " - " + patient.getPersonName());
+        }
+    }
+
 }

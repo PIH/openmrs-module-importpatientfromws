@@ -40,6 +40,7 @@ public interface ImportPatientFromWebService extends OpenmrsService {
 
     List<Patient> searchRemoteServer(String serverName, String name, String gender, Date birthdate) throws IOException;
 
-    void registerRemoteServer(String serverName, RemoteServerConfiguration remoteServerConfiguration);
+    List<Patient> searchRemoteServer(String serverName, String id) throws IOException;
 
+    void registerRemoteServer(String serverName, RemoteServerConfiguration remoteServerConfiguration);
 }

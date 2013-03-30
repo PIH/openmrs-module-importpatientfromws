@@ -133,6 +133,15 @@ public class BehaviorTest {
         assertThat(results.get(0).getPersonName().toString(), is("Ellen Ball"));
     }
 
+    @Test
+    public void testFetchingPatientsById() throws Exception {
+        searchResponse = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("query-results.json"), "UTF-8");
+        service.registerRemoteServer("lacolline", remoteServerConfiguration);
+        List<Patient> results = service.searchRemoteServer("lacolline", "2ALH69");
+        assertThat(results.size(), is(1));
+        assertThat(results.get(0).getPersonName().toString(), is("Ellen Ball"));
+    }
+
     private class MockClient extends Client {
         @Override
         public WebResource resource(String u) {
