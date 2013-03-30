@@ -14,15 +14,22 @@
 
 package org.openmrs.module.importpatientfromws.api;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.module.importpatientfromws.api.impl.ImportPatientFromWebServiceImpl;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import javax.ws.rs.core.MediaType;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -31,38 +38,54 @@ import java.util.Map;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  *
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(WebResource.Builder.class)
 public class BehaviorTest {
 
     private ImportPatientFromWebService service;
     private SimpleDateFormat dateFormat;
 
+    private RemoteServerConfiguration remoteServerConfiguration;
+    private PatientIdentifierType zlEmrId;
+    private Location lacolline;
+    private PersonAttributeType telephoneNumber;
+    private String searchResponse;
+
     @Before
     public void setUp() throws Exception {
-        service = new ImportPatientFromWebServiceImpl();
+        service = new ImportPatientFromWebServiceImpl(new MockClient());
+
         dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+        zlEmrId = new PatientIdentifierType();
+        Map<String, PatientIdentifierType> identifierTypes = new HashMap<String, PatientIdentifierType>();
+        identifierTypes.put("a541af1e-105c-40bf-b345-ba1fd6a59b85", zlEmrId);
+
+        lacolline = new Location();
+        Map<String, Location> locationMap = new HashMap<String, Location>();
+        locationMap.put("23e7bb0d-51f9-4d5f-b34b-2fbbfeea1960", lacolline);
+
+        telephoneNumber = new PersonAttributeType();
+        Map<String, PersonAttributeType> attributeTypeMap = new HashMap<String, PersonAttributeType>();
+        attributeTypeMap.put("340d04c4-0370-102d-b0e3-001ec94a0cc1", telephoneNumber);
+
+        remoteServerConfiguration = new RemoteServerConfiguration("http://google.com", "user", "pass", identifierTypes, locationMap, attributeTypeMap);
     }
 
     @Test
     public void testParsingPatient() throws Exception {
-        PatientIdentifierType zlEmrId = new PatientIdentifierType();
-        Map<String, PatientIdentifierType> identifierTypes = new HashMap<String, PatientIdentifierType>();
-        identifierTypes.put("a541af1e-105c-40bf-b345-ba1fd6a59b85", zlEmrId);
-
-        Location lacolline = new Location();
-        Map<String, Location> locationMap = new HashMap<String, Location>();
-        locationMap.put("23e7bb0d-51f9-4d5f-b34b-2fbbfeea1960", lacolline);
-
-        PersonAttributeType telephoneNumber = new PersonAttributeType();
-        Map<String, PersonAttributeType> attributeTypeMap = new HashMap<String, PersonAttributeType>();
-        attributeTypeMap.put("340d04c4-0370-102d-b0e3-001ec94a0cc1", telephoneNumber);
-
         String patientJson = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("patient.json"), "UTF-8");
 
-        Patient actual = service.toPatient(patientJson, identifierTypes, locationMap, attributeTypeMap);
+        Patient actual = service.toPatient(patientJson, remoteServerConfiguration.getIdentifierTypeMap(),
+                remoteServerConfiguration.getLocationMap(), remoteServerConfiguration.getAttributeTypeMap());
 
         assertThat(actual.getGender(), is("F"));
         assertThat(actual.getBirthdate(), is(dateFormat.parse("1969-09-20T00:00:00.000-0400")));
@@ -103,8 +126,26 @@ public class BehaviorTest {
 
     @Test
     public void testFetchingPatients() throws Exception {
-        List<Patient> results = service.searchRemoteServer("Ellen Ball", "F", null);
+        searchResponse = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("query-results.json"), "UTF-8");
+        service.registerRemoteServer("lacolline", remoteServerConfiguration);
+        List<Patient> results = service.searchRemoteServer("lacolline", "Ellen Ball", "F", null);
         assertThat(results.size(), is(1));
         assertThat(results.get(0).getPersonName().toString(), is("Ellen Ball"));
     }
+
+    private class MockClient extends Client {
+        @Override
+        public WebResource resource(String u) {
+            WebResource.Builder builder = PowerMockito.mock(WebResource.Builder.class);
+            PowerMockito.when(builder.get(String.class)).thenReturn(searchResponse);
+
+            WebResource webResource = mock(WebResource.class);
+            when(webResource.path(anyString())).thenReturn(webResource);
+            when(webResource.queryParam(anyString(), anyString())).thenReturn(webResource);
+            when(webResource.accept(any(MediaType.class))).thenReturn(builder);
+
+            return webResource;
+        }
+    }
+
 }

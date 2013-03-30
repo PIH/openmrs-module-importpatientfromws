@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.importpatientfromws.api.impl;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -29,14 +31,17 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.PersonName;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService;
+import org.openmrs.module.importpatientfromws.api.RemoteServerConfiguration;
 import org.openmrs.module.importpatientfromws.api.db.ImportPatientFromWebServiceDAO;
 
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,9 +50,21 @@ import java.util.Map;
  */
 public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implements ImportPatientFromWebService {
 
+    public static final String FULL_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     protected final Log log = LogFactory.getLog(this.getClass());
 
     private ImportPatientFromWebServiceDAO dao;
+
+    private Client restClient;
+    private Map<String,RemoteServerConfiguration> remoteServers = new HashMap<String, RemoteServerConfiguration>();
+
+    public ImportPatientFromWebServiceImpl() {
+        restClient = Client.create();
+    }
+
+    public ImportPatientFromWebServiceImpl(Client restClient) {
+        this.restClient = restClient;
+    }
 
     /**
      * @param dao the dao to set
@@ -57,8 +74,17 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
     }
 
     @Override
+    public void registerRemoteServer(String serverName, RemoteServerConfiguration remoteServerConfiguration) {
+        remoteServers.put(serverName, remoteServerConfiguration);
+    }
+
+    @Override
     public Patient toPatient(String jsonString, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException {
         JsonNode json = new ObjectMapper().readValue(jsonString, JsonNode.class);
+        return toPatient(json, identifierTypesByUuid, locationsByUuid, attributeTypesByUuid);
+    }
+
+    private Patient toPatient(JsonNode json, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException {
         JsonNode person = json.get("person");
         if (person == null) {
             throw new IllegalArgumentException("json must contain a \"person\" field");
@@ -157,8 +183,35 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
     }
 
     @Override
-    public List<Patient> searchRemoteServer(String name, String gender, Date birthdate) {
-        return new ArrayList<Patient>();
+    public List<Patient> searchRemoteServer(String serverName, String name, String gender, Date birthdate) throws IOException {
+        RemoteServerConfiguration remoteServerConfiguration = remoteServers.get(serverName);
+        if (remoteServerConfiguration == null) {
+            throw new IllegalArgumentException("Unknown remote server: " + serverName + ". Known servers are " + remoteServers.keySet());
+        }
+        if (!remoteServerConfiguration.getUrl().startsWith("https://")) {
+            log.warn("non-HTTPS connection to " + serverName);
+        }
+
+        WebResource resource = restClient.resource(remoteServerConfiguration.getUrl()).path("ws/rest/v1/patient").queryParam("name", name);
+        if (gender != null) {
+            resource.queryParam("gender", gender);
+        }
+        if (birthdate != null) {
+            resource.queryParam("birthdate", formatDate(birthdate));
+        }
+
+        String json = resource.accept(MediaType.APPLICATION_JSON_TYPE).get(String.class);
+        JsonNode results = new ObjectMapper().readValue(json, JsonNode.class).get("results");
+
+        List<Patient> patients = new ArrayList<Patient>();
+        for (JsonNode patient : results) {
+            patients.add(toPatient(patient, remoteServerConfiguration.getIdentifierTypeMap(), remoteServerConfiguration.getLocationMap(), remoteServerConfiguration.getAttributeTypeMap()));
+        }
+        return patients;
+    }
+
+    private String formatDate(Date date) {
+        return new SimpleDateFormat(FULL_DATE_FORMAT).format(date);
     }
 
     private void copyDateProperty(Object ontoBean, JsonNode fromJson, String field) {
@@ -197,7 +250,7 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
 
     private Date parseDate(String date) {
         try {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            DateFormat dateFormat = new SimpleDateFormat(FULL_DATE_FORMAT);
             return dateFormat.parse(date);
         } catch (ParseException e) {
             throw new IllegalArgumentException("Badly formatted date: " + date);
