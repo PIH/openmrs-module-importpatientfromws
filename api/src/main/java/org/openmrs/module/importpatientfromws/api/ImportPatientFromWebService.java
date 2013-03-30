@@ -38,6 +38,8 @@ public interface ImportPatientFromWebService extends OpenmrsService {
 
     Patient toPatient(String json, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException;
 
-    List<Patient> searchMasterPatientIndex(String name, String gender, Date birthdate);
+    List<Patient> searchRemoteServer(String serverName, String name, String gender, Date birthdate) throws IOException;
+
+    void registerRemoteServer(String serverName, RemoteServerConfiguration remoteServerConfiguration);
 
 }
