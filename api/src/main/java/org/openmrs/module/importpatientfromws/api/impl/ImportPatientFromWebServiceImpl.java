@@ -15,6 +15,7 @@ package org.openmrs.module.importpatientfromws.api.impl;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -192,7 +193,8 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
             log.warn("non-HTTPS connection to " + serverName);
         }
 
-        WebResource resource = restClient.resource(remoteServerConfiguration.getUrl()).path("ws/rest/v1/patient").queryParam("name", name);
+        WebResource resource = restClient.resource(remoteServerConfiguration.getUrl()).path("ws/rest/v1/patient").queryParam("v", "full").queryParam("name", name);
+        resource.addFilter(new HTTPBasicAuthFilter(remoteServerConfiguration.getUsername(), remoteServerConfiguration.getPassword()));
         if (gender != null) {
             resource.queryParam("gender", gender);
         }
