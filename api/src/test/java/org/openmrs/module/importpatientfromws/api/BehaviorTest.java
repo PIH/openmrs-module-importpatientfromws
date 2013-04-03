@@ -24,6 +24,7 @@ import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
+import org.openmrs.module.importpatientfromws.RemotePatient;
 import org.openmrs.module.importpatientfromws.api.impl.ImportPatientFromWebServiceImpl;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -129,7 +130,7 @@ public class BehaviorTest {
     public void testFetchingPatients() throws Exception {
         searchResponse = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("query-results.json"), "UTF-8");
         service.registerRemoteServer("lacolline", remoteServerConfiguration);
-        List<Patient> results = service.searchRemoteServer("lacolline", "Ellen Ball", "F", null);
+        List<RemotePatient> results = service.searchRemoteServer("lacolline", "Ellen Ball", "F", null);
         assertThat(results.size(), is(1));
         assertThat(results.get(0).getPersonName().toString(), is("Ellen Ball"));
     }
@@ -138,7 +139,7 @@ public class BehaviorTest {
     public void testFetchingPatientsById() throws Exception {
         searchResponse = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("query-results.json"), "UTF-8");
         service.registerRemoteServer("lacolline", remoteServerConfiguration);
-        List<Patient> results = service.searchRemoteServer("lacolline", "2ALH69");
+        List<RemotePatient> results = service.searchRemoteServer("lacolline", "2ALH69");
         assertThat(results.size(), is(1));
         assertThat(results.get(0).getPersonName().toString(), is("Ellen Ball"));
     }

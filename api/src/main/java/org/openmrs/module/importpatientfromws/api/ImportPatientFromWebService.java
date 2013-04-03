@@ -18,6 +18,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.OpenmrsService;
+import org.openmrs.module.importpatientfromws.RemotePatient;
 
 import java.io.IOException;
 import java.util.Date;
@@ -38,9 +39,9 @@ public interface ImportPatientFromWebService extends OpenmrsService {
 
     Patient toPatient(String json, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException;
 
-    List<Patient> searchRemoteServer(String serverName, String name, String gender, Date birthdate) throws IOException;
+    List<RemotePatient> searchRemoteServer(String serverName, String name, String gender, Date birthdate) throws IOException;
 
-    List<Patient> searchRemoteServer(String serverName, String id) throws IOException;
+    List<RemotePatient> searchRemoteServer(String serverName, String id) throws IOException;
 
     void registerRemoteServer(String serverName, RemoteServerConfiguration remoteServerConfiguration);
 

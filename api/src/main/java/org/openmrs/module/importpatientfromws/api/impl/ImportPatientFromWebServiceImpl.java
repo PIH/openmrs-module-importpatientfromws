@@ -31,6 +31,7 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.PersonName;
 import org.openmrs.api.impl.BaseOpenmrsService;
+import org.openmrs.module.importpatientfromws.RemotePatient;
 import org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService;
 import org.openmrs.module.importpatientfromws.api.RemoteServerConfiguration;
 import org.openmrs.module.importpatientfromws.api.db.ImportPatientFromWebServiceDAO;
@@ -89,18 +90,19 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
     }
 
     @Override
-    public Patient toPatient(String jsonString, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException {
+    public RemotePatient toPatient(String jsonString, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException {
         JsonNode json = new ObjectMapper().readValue(jsonString, JsonNode.class);
         return toPatient(json, identifierTypesByUuid, locationsByUuid, attributeTypesByUuid);
     }
 
-    private Patient toPatient(JsonNode json, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException {
+    private RemotePatient toPatient(JsonNode json, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException {
         JsonNode person = json.get("person");
         if (person == null) {
             throw new IllegalArgumentException("json must contain a \"person\" field");
         }
 
-        Patient patient = new Patient();
+        RemotePatient patient = new RemotePatient();
+        patient.setRemoteUuid(json.get("uuid").getTextValue());
         patient.setGender(person.get("gender").getTextValue());
         patient.setBirthdate(parseDate(person.get("birthdate").getTextValue()));
 
@@ -193,7 +195,7 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
     }
 
     @Override
-    public List<Patient> searchRemoteServer(String serverName, String name, String gender, Date birthdate) throws IOException {
+    public List<RemotePatient> searchRemoteServer(String serverName, String name, String gender, Date birthdate) throws IOException {
         RemoteServerConfiguration remoteServerConfiguration = remoteServers.get(serverName);
         WebResource resource = setUpWebResource(serverName, remoteServerConfiguration);
 
@@ -208,11 +210,11 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
         return doPatientSearch(remoteServerConfiguration, resource);
     }
 
-    private List<Patient> doPatientSearch(RemoteServerConfiguration remoteServerConfiguration, WebResource resource) throws IOException {
+    private List<RemotePatient> doPatientSearch(RemoteServerConfiguration remoteServerConfiguration, WebResource resource) throws IOException {
         String json = resource.accept(MediaType.APPLICATION_JSON_TYPE).get(String.class);
         JsonNode results = new ObjectMapper().readValue(json, JsonNode.class).get("results");
 
-        List<Patient> patients = new ArrayList<Patient>();
+        List<RemotePatient> patients = new ArrayList<RemotePatient>();
         for (JsonNode patient : results) {
             patients.add(toPatient(patient, remoteServerConfiguration.getIdentifierTypeMap(), remoteServerConfiguration.getLocationMap(), remoteServerConfiguration.getAttributeTypeMap()));
         }
@@ -233,7 +235,7 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
     }
 
     @Override
-    public List<Patient> searchRemoteServer(String serverName, String id) throws IOException {
+    public List<RemotePatient> searchRemoteServer(String serverName, String id) throws IOException {
         RemoteServerConfiguration remoteServerConfiguration = remoteServers.get(serverName);
         WebResource resource = setUpWebResource(serverName, remoteServerConfiguration);
 

@@ -22,6 +22,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.importpatientfromws.RemotePatient;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
 import java.util.HashMap;
@@ -31,8 +32,12 @@ import java.util.Map;
 /**
  *
  */
-@Ignore
+
 public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
+
+    public final static String url="http://boston.pih-emr.org:8080/openmrs";
+    public final static String username="wsuser";
+    public final static String password="wsuser123";
 
     private ImportPatientFromWebService service;
 
@@ -51,9 +56,9 @@ public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
         attributeTypeMap.put("340d04c4-0370-102d-b0e3-001ec94a0cc1", birthplace);
 
         RemoteServerConfiguration remoteServerConfiguration = new RemoteServerConfiguration();
-        remoteServerConfiguration.setUrl("REPLACE_ME");
-        remoteServerConfiguration.setUsername("REPLACE_ME");
-        remoteServerConfiguration.setPassword("REPLACE_ME");
+        remoteServerConfiguration.setUrl(url);
+        remoteServerConfiguration.setUsername(username);
+        remoteServerConfiguration.setPassword(password);
         remoteServerConfiguration.setIdentifierTypeMap(identifierTypes);
         remoteServerConfiguration.setLocationMap(locationMap);
         remoteServerConfiguration.setAttributeTypeMap(attributeTypeMap);
@@ -64,7 +69,7 @@ public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
 
     @Test
     public void testLiveWebserviceSearchByName() throws Exception {
-        List<Patient> patients = service.searchRemoteServer("testing", "ellen", "F", null);
+        List<RemotePatient> patients = service.searchRemoteServer("testing", "ellen", "F", null);
 
         System.out.println("=== Found " + patients.size() + " patients by name ===");
         for (Patient patient : patients) {
@@ -74,7 +79,7 @@ public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
 
     @Test
     public void testLiveWebserviceSearchById() throws Exception {
-        List<Patient> patients = service.searchRemoteServer("testing", "2ALH69");
+        List<RemotePatient> patients = service.searchRemoteServer("testing", "2ALH69");
 
         System.out.println("=== Found " + patients.size() + " patients by ID ===");
         for (Patient patient : patients) {
