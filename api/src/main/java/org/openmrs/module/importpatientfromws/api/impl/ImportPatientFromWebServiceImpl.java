@@ -30,6 +30,8 @@ import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.PersonName;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.importpatientfromws.RemotePatient;
 import org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService;
@@ -41,11 +43,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * It is a default implementation of {@link org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService}.
@@ -56,6 +54,7 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
     protected final Log log = LogFactory.getLog(this.getClass());
 
     private ImportPatientFromWebServiceDAO dao;
+    private PatientService patientService;
 
     private Client restClient;
     private Map<String,RemoteServerConfiguration> remoteServers = new HashMap<String, RemoteServerConfiguration>();
@@ -73,6 +72,10 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
      */
     public void setDao(ImportPatientFromWebServiceDAO dao) {
         this.dao = dao;
+    }
+
+    public void setPatientService(PatientService patientService) {
+        this.patientService = patientService;
     }
 
     @Override
@@ -101,8 +104,9 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
             throw new IllegalArgumentException("json must contain a \"person\" field");
         }
 
-        RemotePatient patient = new RemotePatient();
-        patient.setRemoteUuid(json.get("uuid").getTextValue());
+        RemotePatient remotePatient = new RemotePatient();
+        remotePatient.setRemoteUuid(json.get("uuid").getTextValue());
+        Patient patient = new Patient();
         patient.setGender(person.get("gender").getTextValue());
         patient.setBirthdate(parseDate(person.get("birthdate").getTextValue()));
 
@@ -190,8 +194,8 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
                 patient.addAttribute(personAttribute);
             }
         }
-
-        return patient;
+        remotePatient.setPatient(patient);
+        return remotePatient;
     }
 
     @Override
@@ -216,9 +220,26 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
 
         List<RemotePatient> patients = new ArrayList<RemotePatient>();
         for (JsonNode patient : results) {
-            patients.add(toPatient(patient, remoteServerConfiguration.getIdentifierTypeMap(), remoteServerConfiguration.getLocationMap(), remoteServerConfiguration.getAttributeTypeMap()));
+            RemotePatient candidate = toPatient(patient, remoteServerConfiguration.getIdentifierTypeMap(), remoteServerConfiguration.getLocationMap(), remoteServerConfiguration.getAttributeTypeMap());
+            candidate.setLocalPatient(getLocalPatientByAnyIdentifier(candidate.getPatient()));
+            patients.add(candidate);
         }
         return patients;
+    }
+    private Boolean getLocalPatientByAnyIdentifier(Patient patient){
+        Boolean localPatient = false;
+        if(patient!=null){
+            List<PatientIdentifier> activeIdentifiers = patient.getActiveIdentifiers();
+            if(activeIdentifiers!=null && activeIdentifiers.size()>0){
+                for(PatientIdentifier patientIdentifier : activeIdentifiers){
+                    List<Patient> patients = patientService.getPatients(null, patientIdentifier.getIdentifier(), Arrays.asList(patientIdentifier.getIdentifierType()), true);
+                    if(patients!=null && patients.size()>0){
+                        return true;
+                    }
+                }
+            }
+        }
+        return localPatient;
     }
 
     private WebResource setUpWebResource(String serverName, RemoteServerConfiguration remoteServerConfiguration) {

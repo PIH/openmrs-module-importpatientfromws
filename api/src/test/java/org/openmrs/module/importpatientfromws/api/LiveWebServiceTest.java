@@ -72,8 +72,8 @@ public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
         List<RemotePatient> patients = service.searchRemoteServer("testing", "ellen", "F", null);
 
         System.out.println("=== Found " + patients.size() + " patients by name ===");
-        for (Patient patient : patients) {
-            System.out.println(patient.getPatientIdentifier() + " - " + patient.getPersonName());
+        for (RemotePatient remotePatient : patients) {
+            System.out.println(remotePatient.getPatient().getPatientIdentifier() + " - " + remotePatient.getPatient().getPersonName());
         }
     }
 
@@ -82,8 +82,8 @@ public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
         List<RemotePatient> patients = service.searchRemoteServer("testing", "2ALH69");
 
         System.out.println("=== Found " + patients.size() + " patients by ID ===");
-        for (Patient patient : patients) {
-            System.out.println(patient.getPatientIdentifier() + " - " + patient.getPersonName());
+        for (RemotePatient remotePatient : patients) {
+            System.out.println(remotePatient.getPatient().getPatientIdentifier() + " - " + remotePatient.getPatient().getPersonName());
         }
     }
 

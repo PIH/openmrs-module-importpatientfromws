@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public interface ImportPatientFromWebService extends OpenmrsService {
 
-    Patient toPatient(String json, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException;
+    RemotePatient toPatient(String json, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException;
 
     List<RemotePatient> searchRemoteServer(String serverName, String name, String gender, Date birthdate) throws IOException;
 

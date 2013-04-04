@@ -18,6 +18,7 @@
                         </property>
                     </bean>
                 </property>
+                <property name="patientService" ref="patientService" />
             </bean>
         </property>
         <property name="preInterceptors">
