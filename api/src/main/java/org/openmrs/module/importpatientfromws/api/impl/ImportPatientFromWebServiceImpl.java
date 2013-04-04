@@ -232,9 +232,11 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
             List<PatientIdentifier> activeIdentifiers = patient.getActiveIdentifiers();
             if(activeIdentifiers!=null && activeIdentifiers.size()>0){
                 for(PatientIdentifier patientIdentifier : activeIdentifiers){
-                    List<Patient> patients = patientService.getPatients(null, patientIdentifier.getIdentifier(), Arrays.asList(patientIdentifier.getIdentifierType()), true);
-                    if(patients!=null && patients.size()>0){
-                        return true;
+                    if(patientIdentifier.getIdentifierType()!=null){
+                        List<Patient> patients = patientService.getPatients(null, patientIdentifier.getIdentifier(), Arrays.asList(patientIdentifier.getIdentifierType()), true);
+                        if(patients!=null && patients.size()>0){
+                            return true;
+                        }
                     }
                 }
             }

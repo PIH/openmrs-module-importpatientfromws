@@ -78,6 +78,16 @@ public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
     }
 
     @Test
+    public void testLiveWebserviceSearchByNameAndGender() throws Exception {
+        List<RemotePatient> patients = service.searchRemoteServer("testing", "ellen bal", "M", null);
+
+        System.out.println("=== Found " + patients.size() + " patients by name and gender===");
+        for (RemotePatient remotePatient : patients) {
+            System.out.println(remotePatient.getPatient().getPatientIdentifier() + " - " + remotePatient.getPatient().getPersonName());
+        }
+    }
+
+    @Test
     public void testLiveWebserviceSearchById() throws Exception {
         List<RemotePatient> patients = service.searchRemoteServer("testing", "2ALH69");
 

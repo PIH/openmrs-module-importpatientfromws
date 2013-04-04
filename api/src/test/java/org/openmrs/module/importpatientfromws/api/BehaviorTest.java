@@ -18,7 +18,6 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openmrs.Location;
@@ -35,7 +34,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.ws.rs.core.MediaType;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -67,8 +68,9 @@ public class BehaviorTest {
     @Before
     public void setUp() throws Exception {
         mockPatientService = PowerMockito.mock(PatientService.class);
-        service = new ImportPatientFromWebServiceImpl(new MockClient());
-
+        ImportPatientFromWebServiceImpl importService = new ImportPatientFromWebServiceImpl(new MockClient());
+        importService.setPatientService(mockPatientService);
+        this.service = importService;
         dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
         zlEmrId = new PatientIdentifierType();
@@ -83,7 +85,7 @@ public class BehaviorTest {
         Map<String, PersonAttributeType> attributeTypeMap = new HashMap<String, PersonAttributeType>();
         attributeTypeMap.put("340d04c4-0370-102d-b0e3-001ec94a0cc1", telephoneNumber);
 
-        when(mockPatientService.getPatients(null, "", Arrays.asList(zlEmrId), true)).thenReturn(Collections.singletonList(new Patient()));
+        //when(mockPatientService.getPatients(null, "", Arrays.asList(zlEmrId), true)).thenReturn(Collections.singletonList(new Patient()));
         remoteServerConfiguration = new RemoteServerConfiguration("http://google.com", "user", "pass", identifierTypes, locationMap, attributeTypeMap);
     }
 
@@ -132,7 +134,6 @@ public class BehaviorTest {
         assertThat(actual.getActiveAttributes().get(0).getValue(), is("389389389"));
     }
 
-    @Ignore
     @Test
     public void testFetchingPatients() throws Exception {
         searchResponse = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("query-results.json"), "UTF-8");
@@ -142,7 +143,7 @@ public class BehaviorTest {
         assertThat(results.get(0).getPatient().getPersonName().toString(), is("Ellen Ball"));
     }
 
-    @Ignore
+
     @Test
     public void testFetchingPatientsById() throws Exception {
         searchResponse = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("query-results.json"), "UTF-8");
