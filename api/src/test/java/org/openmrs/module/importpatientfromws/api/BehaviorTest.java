@@ -138,7 +138,7 @@ public class BehaviorTest {
     public void testFetchingPatients() throws Exception {
         searchResponse = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("query-results.json"), "UTF-8");
         service.registerRemoteServer("lacolline", remoteServerConfiguration);
-        List<RemotePatient> results = service.searchRemoteServer("lacolline", "Ellen Ball", "F", null);
+        List<RemotePatient> results = service.searchRemoteServer("lacolline", "Ellen Ball", "F", null, null);
         assertThat(results.size(), is(1));
         assertThat(results.get(0).getPatient().getPersonName().toString(), is("Ellen Ball"));
     }
@@ -148,7 +148,7 @@ public class BehaviorTest {
     public void testFetchingPatientsById() throws Exception {
         searchResponse = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("query-results.json"), "UTF-8");
         service.registerRemoteServer("lacolline", remoteServerConfiguration);
-        List<RemotePatient> results = service.searchRemoteServer("lacolline", "2ALH69");
+        List<RemotePatient> results = service.searchRemoteServer("lacolline", "2ALH69", null);
         assertThat(results.size(), is(1));
         assertThat(results.get(0).getPatient().getPersonName().toString(), is("Ellen Ball"));
     }

@@ -15,10 +15,8 @@
 package org.openmrs.module.importpatientfromws.api;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
-import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
@@ -69,7 +67,7 @@ public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
 
     @Test
     public void testLiveWebserviceSearchByName() throws Exception {
-        List<RemotePatient> patients = service.searchRemoteServer("testing", "ellen", "F", null);
+        List<RemotePatient> patients = service.searchRemoteServer("testing", "ellen", "F", null, 3000);
 
         System.out.println("=== Found " + patients.size() + " patients by name ===");
         for (RemotePatient remotePatient : patients) {
@@ -79,7 +77,7 @@ public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
 
     @Test
     public void testLiveWebserviceSearchByNameAndGender() throws Exception {
-        List<RemotePatient> patients = service.searchRemoteServer("testing", "ellen bal", "M", null);
+        List<RemotePatient> patients = service.searchRemoteServer("testing", "ellen bal", "M", null, null);
 
         System.out.println("=== Found " + patients.size() + " patients by name and gender===");
         for (RemotePatient remotePatient : patients) {
@@ -89,7 +87,7 @@ public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
 
     @Test
     public void testLiveWebserviceSearchById() throws Exception {
-        List<RemotePatient> patients = service.searchRemoteServer("testing", "2ALH69");
+        List<RemotePatient> patients = service.searchRemoteServer("testing", "2ALH69", null);
 
         System.out.println("=== Found " + patients.size() + " patients by ID ===");
         for (RemotePatient remotePatient : patients) {

@@ -39,9 +39,9 @@ public interface ImportPatientFromWebService extends OpenmrsService {
 
     RemotePatient toPatient(String json, Map<String, PatientIdentifierType> identifierTypesByUuid, Map<String, Location> locationsByUuid, Map<String, PersonAttributeType> attributeTypesByUuid) throws IOException;
 
-    List<RemotePatient> searchRemoteServer(String serverName, String name, String gender, Date birthdate) throws IOException;
+    List<RemotePatient> searchRemoteServer(String serverName, String name, String gender, Date birthdate, Integer timeout) throws IOException;
 
-    List<RemotePatient> searchRemoteServer(String serverName, String id) throws IOException;
+    List<RemotePatient> searchRemoteServer(String serverName, String id, Integer timeout) throws IOException;
 
     void registerRemoteServer(String serverName, RemoteServerConfiguration remoteServerConfiguration);
 

@@ -31,7 +31,6 @@ import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.PersonName;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.importpatientfromws.RemotePatient;
 import org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService;
@@ -199,9 +198,9 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
     }
 
     @Override
-    public List<RemotePatient> searchRemoteServer(String serverName, String name, String gender, Date birthdate) throws IOException {
+    public List<RemotePatient> searchRemoteServer(String serverName, String name, String gender, Date birthdate, Integer timeout) throws IOException {
         RemoteServerConfiguration remoteServerConfiguration = remoteServers.get(serverName);
-        WebResource resource = setUpWebResource(serverName, remoteServerConfiguration);
+        WebResource resource = setUpWebResource(serverName, remoteServerConfiguration, timeout);
 
         resource = resource.queryParam("name", name);
         if (gender != null) {
@@ -244,7 +243,7 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
         return localPatient;
     }
 
-    private WebResource setUpWebResource(String serverName, RemoteServerConfiguration remoteServerConfiguration) {
+    private WebResource setUpWebResource(String serverName, RemoteServerConfiguration remoteServerConfiguration, Integer timeout) {
         if (remoteServerConfiguration == null) {
             throw new IllegalArgumentException("Unknown remote server: " + serverName + ". Known servers are " + remoteServers.keySet());
         }
@@ -253,14 +252,17 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
         }
 
         WebResource resource = restClient.resource(remoteServerConfiguration.getUrl()).path("ws/rest/v1/patient").queryParam("v", "full");
+        if(timeout!=null){
+            restClient.setReadTimeout(timeout);
+        }
         resource.addFilter(new HTTPBasicAuthFilter(remoteServerConfiguration.getUsername(), remoteServerConfiguration.getPassword()));
         return resource;
     }
 
     @Override
-    public List<RemotePatient> searchRemoteServer(String serverName, String id) throws IOException {
+    public List<RemotePatient> searchRemoteServer(String serverName, String id, Integer timeout) throws IOException {
         RemoteServerConfiguration remoteServerConfiguration = remoteServers.get(serverName);
-        WebResource resource = setUpWebResource(serverName, remoteServerConfiguration);
+        WebResource resource = setUpWebResource(serverName, remoteServerConfiguration, timeout);
 
         resource = resource.queryParam("id", id);
 
