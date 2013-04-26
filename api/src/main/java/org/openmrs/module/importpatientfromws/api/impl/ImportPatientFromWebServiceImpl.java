@@ -37,12 +37,18 @@ import org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService;
 import org.openmrs.module.importpatientfromws.api.RemoteServerConfiguration;
 import org.openmrs.module.importpatientfromws.api.db.ImportPatientFromWebServiceDAO;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * It is a default implementation of {@link org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService}.
@@ -59,11 +65,16 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
     private Map<String,RemoteServerConfiguration> remoteServers = new HashMap<String, RemoteServerConfiguration>();
 
     public ImportPatientFromWebServiceImpl() {
-        restClient = Client.create();
     }
 
     public ImportPatientFromWebServiceImpl(Client restClient) {
         this.restClient = restClient;
+    }
+
+
+    @PostConstruct
+    public void init() {
+        restClient = Client.create();
     }
 
     /**
