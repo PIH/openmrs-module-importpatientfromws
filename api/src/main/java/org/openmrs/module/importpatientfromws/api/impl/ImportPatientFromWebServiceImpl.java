@@ -118,7 +118,10 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
         remotePatient.setRemoteUuid(json.get("uuid").getTextValue());
         Patient patient = new Patient();
         patient.setGender(person.get("gender").getTextValue());
-        patient.setBirthdate(parseDate(person.get("birthdate").getTextValue()));
+        String personBirthdate = person.get("birthdate").getTextValue();
+        if(StringUtils.isNotBlank(personBirthdate)){
+            patient.setBirthdate(parseDate(personBirthdate));
+        }
 
         for (JsonNode id : json.get("identifiers")) {
             if (id.get("voided").getBooleanValue()) {
