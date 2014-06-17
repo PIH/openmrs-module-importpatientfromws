@@ -67,7 +67,7 @@ public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
 
     @Test
     public void testLiveWebserviceSearchByName() throws Exception {
-        List<RemotePatient> patients = service.searchRemoteServer("testing", "ellen", "F", null, 3000);
+        List<RemotePatient> patients = service.searchRemoteServer("testing", "Test", "F", null, 30000);
 
         System.out.println("=== Found " + patients.size() + " patients by name ===");
         for (RemotePatient remotePatient : patients) {
