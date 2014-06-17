@@ -37,8 +37,6 @@ import org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService;
 import org.openmrs.module.importpatientfromws.api.RemoteServerConfiguration;
 import org.openmrs.module.importpatientfromws.api.db.ImportPatientFromWebServiceDAO;
 
-import javax.annotation.PostConstruct;
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -49,6 +47,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.ws.rs.core.MediaType;
 
 /**
  * It is a default implementation of {@link org.openmrs.module.importpatientfromws.api.ImportPatientFromWebService}.
@@ -138,11 +138,22 @@ public class ImportPatientFromWebServiceImpl extends BaseOpenmrsService implemen
 
             String identifier = id.get("identifier").getTextValue();
 
-            String idLocationUuid = id.get("location").get("uuid").getTextValue();
-            Location location = locationsByUuid.get(idLocationUuid);
-            if (idType == null) {
+            Location location = null;
+            JsonNode locationNode = id.get("location");
+
+            // for some reason in Lacolline there are some identifiers without locations
+            if (!locationNode.isNull()) {
+                location = locationsByUuid.get(locationNode.get("uuid").getTextValue());
+                if (location == null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Skipping unmapped location: " + locationNode.get("uuid").getTextValue());
+                    }
+                    continue;
+                }
+            }
+            else {
                 if (log.isDebugEnabled()) {
-                    log.debug("Skipping unmapped location: " + idLocationUuid);
+                    log.debug("Skipping identifier with missing location");
                 }
                 continue;
             }
