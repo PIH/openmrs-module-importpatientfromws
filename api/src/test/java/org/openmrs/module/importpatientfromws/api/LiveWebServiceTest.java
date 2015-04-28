@@ -15,6 +15,7 @@
 package org.openmrs.module.importpatientfromws.api;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
@@ -30,7 +31,7 @@ import java.util.Map;
 /**
  *
  */
-
+@Ignore // Boston server is no longer running
 public class LiveWebServiceTest extends BaseModuleContextSensitiveTest {
 
     public final static String url="http://boston.pih-emr.org:8080/openmrs";
