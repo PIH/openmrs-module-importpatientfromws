@@ -5,7 +5,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>importpatientfromws</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>pom</packaging>
     <name>Import Patient From Web Service Module</name>
     <description>Lets you import a patient from an OpenMRS server exposing REST web services</description>
