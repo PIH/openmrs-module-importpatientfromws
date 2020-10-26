@@ -34,7 +34,7 @@
         <property name="moduleService">
             <list merge="true">
                 <value>${project.parent.groupId}.${project.parent.artifactId}.api.ImportPatientFromWebService</value>
-               <ref local="importPatientFromWebService" />
+               <ref bean="importPatientFromWebService" />
             </list>
         </property>
     </bean>
